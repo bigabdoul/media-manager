@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Arts.Web
 {
@@ -32,7 +33,19 @@ namespace Arts.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
+                var connectionString = Configuration["DefaultConnection"];
+                if (string.IsNullOrWhiteSpace(connectionString))
+                {
+                    throw new Exception("The default database connection string is not configured. Set up " +
+                        "a user secret or application configuration file for this application to run properly. " +
+                        "For details on how to do that, follow this link "  +
+                        "https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?tabs=visual-studio " +
+                        "or run the following from a command prompt:\n" +
+                        "> dotnet user-secrets set DefaultConnection <your database connection string>");
+                }
+                options.UseSqlServer(connectionString);
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -43,31 +56,7 @@ namespace Arts.Web
 
             services.AddMvc();
 
-            var auth = services.AddAuthentication();
-
-            auth.AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
-
-            auth.AddGoogle(options =>
-            {
-                options.ClientId = Configuration["Authentication:Google:ClientId"];
-                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-            });
-
-            //auth.AddMicrosoftAccount(options =>
-            //{
-            //    options.ClientId = Configuration["Authentication:Microsoft:ClientId"];
-            //    options.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-            //});
-
-            auth.AddTwitter(options =>
-            {
-                options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-            });
+            ConfigureAuthentication(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,5 +89,54 @@ namespace Arts.Web
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+        #region authentication helpers
+
+        public void ConfigureAuthentication(IServiceCollection services)
+        {
+            var auth = services.AddAuthentication();
+
+            AddAuth("Facebook", (id, secret) => auth.AddFacebook(options =>
+            {
+                options.AppId = id;
+                options.AppSecret = secret;
+            }));
+
+            AddAuth("Google", (id, secret) => auth.AddGoogle(options =>
+            {
+                options.ClientId = id;
+                options.ClientSecret = secret;
+            }));
+
+            AddAuth("Microsoft", (id, secret) => auth.AddMicrosoftAccount(options =>
+            {
+                options.ClientId = id;
+                options.ClientSecret = secret;
+            }));
+
+            AddAuth("Twitter", (id, secret) => auth.AddTwitter(options =>
+            {
+                options.ConsumerKey = id;
+                options.ConsumerSecret = secret;
+            }));
+        }
+
+        private bool HasAuthentication(string providerName, out string appId, out string appSecret)
+        {
+            appId = Configuration[$"Authentication:{providerName}:ClientId"];
+            appSecret = Configuration[$"Authentication:{providerName}:ClientSecret"];
+
+            return !string.IsNullOrWhiteSpace(appId) && !string.IsNullOrWhiteSpace(appSecret);
+        }
+
+        private void AddAuth(string providerName, Action<string, string> onSuccess)
+        {
+            if (HasAuthentication(providerName, out var id, out var secret))
+            {
+                onSuccess(id, secret);
+            }
+        }
+
+        #endregion
     }
 }
