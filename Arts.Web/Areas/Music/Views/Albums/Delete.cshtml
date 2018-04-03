@@ -1,0 +1,53 @@
+﻿@model MediaAlbum
+
+@{
+    ViewData["Title"] = "Delete Album";
+    var itemCount = Model.Items.Count;
+}
+
+<div class="page-header blank">
+    <h2>@ViewBag.Title</h2>
+</div>
+
+<div class="row">
+    <!-- Left Album Info -->
+    <div class="col-sm-4 col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @if (!string.IsNullOrWhiteSpace(Model.MediaUrl))
+                {
+                    <img src="@Model.MediaUrl" alt="@Model.Title" class="img-responsive">
+                }
+                else
+                {
+                    <h3>No image to display</h3>
+                }
+                <h2>
+                    @Model.Title
+                    <small>@Model.Genre</small>
+                </h2>
+                <h3>@Model.Author</h3>
+            </div>
+        </div>
+    </div>
+    <!-- /Left Album Info -->
+
+    <div class="col-sm-8 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3>Are you sure you want to delete this album?</h3>
+                @if (itemCount > 0)
+                {
+                    <p>It contains @itemCount song(s)</p>
+                }
+            </div>
+            <div class="panel-footer">
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <a asp-action="Index" class="btn btn-default"><i class="fa fa-arrow-left"></i> No, take me back</a>
+                    <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash"></i> Yes, sure</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

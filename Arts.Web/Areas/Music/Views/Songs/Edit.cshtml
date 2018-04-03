@@ -1,0 +1,72 @@
+﻿@model IMediaAlbumItem
+
+@{
+    ViewData["Title"] = "Edit Song: " + Model.ToString();
+    var album = ViewBag.MediaAlbum;
+}
+
+<div class="page-header blank"></div>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2>Edit Song: @Model.MediaFileId</h2>
+                </div>
+                <div class="panel-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        @if (album?.HasMedia == true)
+                        {
+                            <img src="@album.MediaUrl" alt="@album.Title" class="img-responsive album-cover pull-left" width="64" style="margin-right:10px;" />
+                        }
+                        <h3>@Model</h3>
+                        <p><small>Location: @Model.MediaUrl</small></p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        @await Html.PartialAsync("_MediaAlbumIdSelect")
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <div class="input-group">
+                            <input asp-for="Title" class="form-control" />
+                            <span class="input-group-btn">
+                                <a target="_blank" href="@Model.MediaUrl" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                </a>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    @*<div class="form-group">
+                        <label asp-for="MediaUrl" class="control-label"></label>
+                        <input asp-for="MediaUrl" class="form-control" />
+                        <span asp-validation-for="MediaUrl" class="text-danger"></span>
+                    </div>*@
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-default"><i class="fa fa-list"></i> Back to Details</a>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger pull-right" title="Delete Song"><i class="fa fa-trash"></i></a>
+                </div>
+            </div>
+            <!-- /.panel-default -->
+        </form>
+    </div>
+    <div class="col-md-6">
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,54 @@
+﻿@model ChangeAlbumViewModel
+
+@{
+    ViewData["Title"] = "Create a New Album";
+}
+
+<h2 class="page-header">@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genre" class="control-label"></label>
+                <input asp-for="Genre" class="form-control" />
+                <span asp-validation-for="Genre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MediaUrl" class="control-label">Cover Picture</label>
+                <input type="file" asp-for="MediaUrl" />
+                <span asp-validation-for="MediaUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MediaName" class="control-label optional"></label>
+                <input asp-for="MediaName" class="form-control" placeholder="Display name of the cover picture"/>
+                <span asp-validation-for="MediaName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="MediaFileId" class="control-label">or select existing picture</label>
+                <select id="MediaFileId" name="MediaFileId" class="form-control" asp-items="ViewBag.MediaFileId"></select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Create</button>
+                <a asp-action="Index" class="btn btn-default pull-right"><i class="fa fa-arrow-left"></i> Back to List</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <img src="#" alt="Cover Picture" class="img-responsive album-cover" />
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

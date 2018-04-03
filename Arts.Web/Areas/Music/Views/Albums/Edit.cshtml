@@ -1,0 +1,78 @@
+﻿@model IMediaAlbum
+
+@{
+    ViewData["Title"] = "Edit Album : " + Model.ToString();
+    var hasMedia = !string.IsNullOrWhiteSpace(Model.MediaUrl);
+}
+<div class="page-header blank"><h2>@ViewBag.Title</h2></div>
+
+<div class="row">
+    <div class="col-sm-6 col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    @if (hasMedia)
+                    {
+                        <img src="@Model.MediaUrl" alt="@Model.Title" class="img-responsive album-cover" />
+                    }
+                    else
+                    {
+                        <img src="#" alt="@Model.Title" class="img-responsive album-cover" />
+                    }
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Back to List</a>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary btn-sm"><i class="fa fa-list"></i> Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-5">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Author" class="control-label"></label>
+                        <input asp-for="Author" class="form-control" />
+                        <span asp-validation-for="Author" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Genre" class="control-label"></label>
+                        <input asp-for="Genre" class="form-control" />
+                        <span asp-validation-for="Genre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="MediaUrl" class="control-label">Cover Picture</label>
+                        @if (hasMedia)
+                        {
+                            <p><small><em>Currrent: @Model.MediaUrl</em></small></p>
+                        }
+                        <input type="file" asp-for="MediaUrl" />
+                        <span asp-validation-for="MediaUrl" class="text-danger"></span>
+                    </div>
+                    @if (ViewBag.MediaFileId is IEnumerable<SelectListItem> listItems)
+                    {
+                    <div class="form-group">
+                        @await Html.PartialAsync("_MediaFileIdSelect")
+                    </div>
+                    }
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

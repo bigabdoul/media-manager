@@ -1,0 +1,107 @@
+﻿@model IEnumerable<MediaAlbum>
+
+@{
+    ViewData["Title"] = "My Albums";
+    var hasAlbums = Model?.Any() == true;
+}
+
+<h2 class="page-header">@ViewBag.Title
+    <span>
+        <a asp-action="Create" class="btn btn-success pull-right">
+            <span class="glyphicon glyphicon-plus"></span>&nbsp; Add an Album
+        </a>
+    </span>
+</h2>
+
+<!-- Albums -->
+<div class="row">
+    @if (hasAlbums)
+    {
+        @Html.AntiForgeryToken();
+        foreach (var album in Model)
+        {
+            <div class="col-sm-4 col-lg-2">
+                <div class="thumbnail">
+                    <a asp-action="Details" asp-route-id="@album.Id">
+                        <img src="@album.MediaUrl" alt="@album.Title" class="img-responsive">
+                    </a>
+                    <div class="caption">
+                        <h2>@album.Title <span class="badge">@album.Items.Count</span></h2>
+                        <h4>@album.Author</h4>
+
+                        <a asp-action="Details" asp-route-id="@album.Id" class="btn btn-primary btn-sm" role="button">View Details</a>
+                        <a asp-action="Delete" asp-route-id="@album.Id" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash"></span></a>
+
+                        <form asp-action="Favorite" asp-route-id="@album.Id" method="post" class="form-inline favorite-form">
+                            <button type="submit" class="btn btn-default btn-sm btn-favorite" role="button" data-content="@album.Id">
+                                <span class="fa fa-star@(album.IsFavorite?" active":"")"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @*<div class="clearfix visible-lg"></div>*@
+        }
+    }
+    else
+    {
+        <div class="col-sm-12">
+            <a asp-action="Create" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp; Add an Album
+            </a>
+        </div>
+    }
+</div>
+
+<!-- If user searches and there are songs -->
+@if (ViewBag.SearchedSongs is IEnumerable<MediaAlbumItem> songs)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Songs</h3>
+        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Song Title</th>
+                                <th>Author</th>
+                                <th>Audio File</th>
+                                <th>Album</th>
+                                <th>Favorite</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in songs)
+                            {
+                                var album = s.MediaAlbum;
+                                <tr>
+                                    <td>@s.Title }}</td>
+                                    <td>@album.Author</td>
+                                    <td>
+                                        <a href="@s.MediaUrl" target="_blank" class="btn btn-success btn-xs">
+                                            <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@album.Id">
+                                            <img src="@album.MediaUrl" class="img-responsive" style="width: 20px; float: left; margin-right: 10px;" />
+                                            <p>@album.Title</p>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a asp-action="Favorite" asp-route-id="@s.Id" class="btn-favorite">
+                                            <span class="glyphicon glyphicon-star@(s.IsFavorite?" active":"")"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

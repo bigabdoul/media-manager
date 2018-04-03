@@ -1,0 +1,21 @@
+@model IMedia
+
+@{
+    var list = ViewBag.MediaFileIdList as IList<MediaFile>;
+}
+
+<label asp-for="MediaFileId" class="control-label">or select existing media</label>
+@if (list?.Count > 1)
+{
+<select asp-for="MediaFileId" class="form-control">
+    @foreach (var a in list)
+        {
+    <option value="@a.Id" data-content="@a.MediaUrl">@a</option>
+        }
+</select>
+}
+else
+{
+<select asp-for="MediaFileId" class="form-control" asp-items="ViewBag.MediaFileId"></select>
+}
+<span asp-validation-for="MediaFileId" class="text-danger"></span>

@@ -1,0 +1,122 @@
+﻿@model IEnumerable<MediaFile>
+
+@{
+    ViewData["Title"] = "Media Uploads";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="page-header">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-sm-4"><h2>@ViewBag.Title</h2></div>
+                    <div class="col-sm-4">
+                        <input type="text" name="Name" class="form-control" placeholder="Media Name" />
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <select id="mediaFilter" name="Id" class="form-control">
+                                <option value="">[Media Type]</option>
+                                <option value="Audio">Audio</option>
+                                <option value="Image">Image</option>
+                                <option value="Video">Video</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table class="table table-condensed media-list">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FileName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ContentType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DateCreated)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Length)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" title="Edit" class="btn btn-default btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a asp-action="MediaDownload" asp-route-id="@item.Id" title="Download" class="btn btn-default btn-sm">
+                                        <i class="fa fa-download"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" title="Delete" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    @if (item.IsImage)
+                                    {
+                                        if (item.HasMedia)
+                                        {
+
+                                            <a href="@item.MediaUrl" target="_blank">
+                                                <img src="@item.MediaUrl" alt="@item.Length" class="img-responsive" width="20">
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <div class="noimg"><span class="glyphicon glyphicon-picture"></span></div>
+                                        }
+                                    }
+                                    else if (item.IsAudio)
+                                    {
+                                        <a asp-action="Play" asp-route-id="@item.Id" target="_blank">
+                                            <span class="glyphicon glyphicon-cd"></span>
+                                        </a>
+
+                                    }
+                                    else if (item.IsVideo)
+                                    {
+                                        <a asp-action="Play" asp-route-id="@item.Id" target="_blank">
+                                            <span class="glyphicon glyphicon-video"></span>
+                                        </a>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Play" asp-route-id="@item.Id" target="_blank">@item.FileName</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ContentType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateCreatedDisplay)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LengthDisplay)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

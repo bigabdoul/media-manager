@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-Arts-DED410F4-9DA8-4078-AD03-BF0A7AFDF6D8</UserSecretsId>
+    <AssemblyName>Arts.Web</AssemblyName>
+    <RootNamespace>Arts.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="wwwroot\uploads\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="wwwroot\uploads\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\**" />
+    <None Remove="Data\**" />
+    <None Remove="wwwroot\uploads\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Music\Controllers\" />
+    <Folder Include="Areas\Music\Data\" />
+    <Folder Include="Areas\Music\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arts.Entity\Arts.Entity.csproj" />
+    <ProjectReference Include="..\Arts.Web.Core\Arts.Web.Core.csproj" />
+  </ItemGroup>
+
+</Project>

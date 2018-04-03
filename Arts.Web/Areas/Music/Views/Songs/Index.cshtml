@@ -1,0 +1,68 @@
+﻿@model IEnumerable<MediaAlbumItem>
+
+@{
+    ViewData["Title"] = "Songs";
+}
+
+<div class="page-header">
+    <h2>My Songs <a asp-action="Create" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add a New Song</a></h2>
+</div>
+@if (!Model.Any())
+{
+    <h3>No Songs</h3>
+    <p>Click the above button to add a new song.</p>
+}
+else
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table class="table table-condensed song-list">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Song Title</th>
+                        <th>Audio</th>
+                        <th class="hidden-xs">Author</th>
+                        <th class="hidden-xs">Album</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var song in Model)
+                    {
+                        var album = song.MediaAlbum;
+                    <tr>
+                        <td align="right">
+                            <a asp-action="Edit" asp-route-id="@song.Id" class="btn btn-xs btn-default" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            &nbsp;
+                            <a asp-action="Details" asp-route-id="@song.Id" class="btn btn-xs btn-default" title="Details">
+                                <i class="fa fa-list"></i>
+                            </a>
+                            &nbsp;
+                            <i class="fa fa-star@(song.IsFavorite?" active":"")" aria-hidden="true"></i>
+                            &nbsp;
+                            <a asp-action="Delete" asp-route-id="@song.Id" class="btn btn-xs btn-danger" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                        <td>@song.Title</td>
+                        <td>
+                            <a asp-area="" asp-controller="Media" asp-action="Play" asp-route-id="@song.MediaFileId" target="_blank" class="btn btn-success btn-xs">
+                                <span class="fa fa-play"></span><span class="hidden-xs">&nbsp; Play</span> 
+                            </a>
+                        </td>
+                        <td class="hidden-xs">@album.Author</td>
+                        <td class="hidden-xs">
+                            <a asp-controller="Albums" asp-action="Details" asp-route-id="@song.MediaAlbumId">
+                                <img src="@album.MediaUrl" class="img-responsive" />
+                            </a>
+                            <a asp-controller="Albums" asp-action="Details" asp-route-id="@song.MediaAlbumId">@album.Title</a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>        .
+        </div>
+    </div>
+}

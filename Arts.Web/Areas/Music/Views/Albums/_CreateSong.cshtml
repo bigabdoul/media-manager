@@ -1,0 +1,33 @@
+﻿@model MediaAlbumItemViewModel
+
+<form class="form-horizontal" role="form" asp-area="Music" asp-controller="Songs" asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="MediaUrl" class="control-label">Audio File Name</label>
+        <input type="file" asp-for="MediaUrl" />
+        <span asp-validation-for="MediaUrl" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MediaName" class="control-label optional"></label>
+        <input asp-for="MediaName" class="form-control" placeholder="Display name of the audio file" />
+        <span asp-validation-for="MediaName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Title" class="control-label">Song Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Create</button>
+    </div>
+    <input type="hidden" asp-for="MediaAlbumId" />
+    <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
+</form>

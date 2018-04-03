@@ -1,0 +1,64 @@
+﻿@model MediaFile
+
+@{
+    ViewData["Title"] = "Delete Media: " + Model.FileName;
+}
+<div class="page-header blank"></div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <h2 class="panel-heading">Delete Media</h2>
+            <div class="panel-body">
+                <h4>Are you sure you want to delete this?</h4>
+                <hr />
+                <h5><strong>@Model.FileName</strong></h5>
+                <small>Location: @Html.DisplayFor(model => model.MediaUrl)</small>
+                <hr />
+                @if (Model.HasMedia)
+                {
+                    if (Model.IsImage)
+                    {
+                        <img src="@Model.MediaUrl" alt="@Model.FileName" class="img-responsive pull-left" width="80" />
+                    }
+                    else if (Model.HasMedia && Model.IsAudio)
+                    {
+                        <a target="_blank" href="@Model.MediaUrl" class="btn btn-success btn-xs pull-left">
+                            <span class="glyphicon glyphicon-play"></span>&nbsp; Play
+                        </a>
+                    }
+                    else if (Model.IsVideo)
+                    {
+                        <i class="glyphicon glyphicon-facetime-video btn-lg pull-left" aria-hidden="true"></i>
+                    }
+                }
+                <dl class="dl-horizontal pull-left">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ContentType)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ContentType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Length)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.LengthDisplay) (@Model.Length.ToString("N") Bytes)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DateCreated)
+                    </dt>
+                    <dd>
+                        @Model.DateCreated.ToString("dd-MM-yyyy @ HH:mm")
+                    </dd>
+                </dl>
+            </div>
+            <div class="panel-footer">
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <a asp-action="Index" class="btn btn-default"><i class="fa fa-arrow-left"></i> No, take me back</a>
+                    <button type="submit" value="Delete" class="btn btn-danger"><i class="fa fa-trash"></i> Yes, sure</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

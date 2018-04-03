@@ -1,0 +1,57 @@
+﻿@model MediaFile
+
+@{
+    Layout = "_LayoutMediaPlayer";
+    ViewData["Title"] = "Playing " + Model.FileName;
+    var album = ViewBag.MediaAlbum as IMediaAlbum;
+}
+
+<div class="page-header"></div>
+<div class="media" align="center">
+    @if (Model.IsVideo == false && album?.HasMedia == true)
+    {
+        <img src="@album?.MediaUrl" alt="@album?.Title" class="img-responsive" width="300" />
+    }
+    @if (Model.IsAudio)
+    {
+        <audio controls autoplay>
+            <source src="@Model.MediaUrl" type="@Model.ContentType" />
+        </audio>
+    }
+    else if (Model.IsVideo)
+    {
+        <video controls autoplay>
+            <source src="@Model.MediaUrl" type="@Model.ContentType" />
+        </video>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #000;
+        background-image: none;
+    }
+
+    hr, footer, .navbar {
+        display: none;
+    }
+
+    .page-header {
+        border-bottom: none;
+        margin: 40px 0;
+    }
+
+    .media {
+        margin-bottom: 100px;
+    }
+
+    @@media (max-width: 767px) {
+        .page-header {
+            margin: 10px 0;
+        }
+
+        .media {
+            margin-bottom: 10px;
+        }
+    }
+</style>

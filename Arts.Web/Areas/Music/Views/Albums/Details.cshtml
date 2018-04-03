@@ -1,0 +1,116 @@
+﻿@model MediaAlbum
+
+@{
+    ViewData["Title"] = Model.ToString();
+}
+
+<h4 class="page-header">@ViewBag.Title</h4>
+<div class="row">
+    <!-- Left Album Info -->
+    <div class="col-sm-4 col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <a asp-area="" asp-controller="Media" asp-action="">
+                        @if (Model.HasMedia)
+                        {
+                            <img src="@Model.MediaUrl" alt="@Model.Title" class="img-responsive">
+                        }
+                        else
+                        {
+                            <h3>No image to display</h3>
+                        }
+                    </a>
+                </div>
+                <h1 class="album-title">@Model.Title <small>@Model.Genre</small></h1>
+                <h2 class="album-author">@Model.Author</h2>
+            </div>
+            <div class="panel-footer">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default"><i class="fa fa-edit"></i> Edit</a>
+                <form asp-action="Favorite" asp-route-id="@Model.Id" method="post" class="form-inline favorite-form">
+                    <button type="submit" class="btn btn-default btn-favorite" role="button" data-content="@Model.Id">
+                        <span class="glyphicon glyphicon-star@(Model.IsFavorite?" active":"")"></span>
+                    </button>
+                </form>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger pull-right"><i class="fa fa-trash"></i></a>
+            </div>
+        </div>
+    </div>
+    <!-- /Left Album Info -->
+    <!-- Right Song Info -->
+    <div class="col-sm-8 col-md-7">
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#pnlAllSongs" role="tab" data-toggle="tab">View All</a>
+            </li>
+            <li role="presentation">
+                <a href="#pnlAddSong" role="tab" data-toggle="tab">Add New Song</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="pnlAllSongs">
+                @if (Model.Items.Count > 0)
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Song Title</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var s in Model.Items)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-controller="Songs" asp-action="Edit" asp-route-id="@s.Id" class="btn btn-default btn-xs">
+                                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                                </a>&nbsp;
+                                                <a asp-area="" asp-controller="Media" asp-action="Play" asp-route-id="@s.MediaFileId" target="_blank" class="btn btn-success btn-xs" title="Play Song">
+                                                    <span class="glyphicon glyphicon-play"></span>
+                                                </a>
+                                                &nbsp;
+                                                <i class="fa fa-star@(s.IsFavorite?" active":"")" aria-hidden="true"></i>&nbsp;
+                                                <a asp-controller="Songs" asp-action="Delete" asp-route-id="@s.Id" class="btn btn-danger btn-xs">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </td>
+                                            <td><a asp-controller="Songs" asp-action="Details" asp-route-id="@s.Id">@s.Title</a></td>
+                                            <td>@s.DateCreated.ToString("dd MMM yyyy @ HH:mm")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <h3>No songs!</h3>
+                        <p>You haven't added any songs to this album!</p>
+                    </div>
+                }
+            </div>
+            <!-- .tab-pane -->
+            <div class="tab-pane" id="pnlAddSong">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3>Add a New Song</h3>
+                        <div class="container-fluid col-md-6">
+                            @{ ViewBag.ReturnUrl = Url.Action(); }
+                            @Html.Partial("_CreateSong.cshtml", new MediaAlbumItemViewModel() { MediaAlbumId = Model.Id })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .tab-pane -->
+        </div>
+        <!-- .tab-content -->
+    </div>
+    <!-- /Right Song Info -->
+</div>

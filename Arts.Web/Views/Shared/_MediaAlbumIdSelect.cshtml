@@ -1,0 +1,21 @@
+@model IMediaAlbumItem
+
+@{
+    var albumList = ViewBag.MediaAlbumIdList as IList<MediaAlbum>;
+}
+
+<label for="MediaAlbumId" class="control-label">Album</label>
+@if (albumList?.Count > 1)
+{
+    <select asp-for="MediaAlbumId" class="form-control">
+        @foreach (var a in albumList)
+        {
+            <option value="@a.Id" data-content="@a.MediaUrl">@a</option>
+        }
+    </select>
+}
+else
+{
+    <select asp-for="MediaAlbumId" class="form-control" asp-items="ViewBag.MediaAlbumId"></select>
+}
+    <span asp-validation-for="MediaAlbumId" class="text-danger"></span>
